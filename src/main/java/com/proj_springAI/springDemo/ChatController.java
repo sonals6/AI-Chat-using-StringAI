@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ChatController {
 
-    ChatService chatService;
+    private final ChatService chatService;
+    private final RecipeService recipeService;
     
-    public ChatController(ChatService chatService)
-    {
-        this.chatService = chatService;
+    public ChatController(ChatService chatService, RecipeService recipeService)
+        {
+            this.chatService = chatService;
+            this.recipeService = recipeService;
     }
 
     
@@ -29,23 +31,15 @@ public class ChatController {
         return chatService.getResponseOptions(prompt, temperature);
     }
 
-
-/* 
-    //@Autowired
-    public ChatController(OllamaChatModel chatModel) {
-        this.chatModel = chatModel;
+    @GetMapping("ask-ai-recipe")
+    public String getRecipe(@RequestParam String ingredients, 
+                                  @RequestParam String cuisine, 
+                                  @RequestParam String diet)
+    {
+        return recipeService.createRecipe(ingredients, cuisine, diet);
     }
 
-    @GetMapping("/ai/generate")
-    public Map<String,String> generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-        return Map.of("generation", this.chatModel.call(message));
-    }
 
-    @GetMapping("/ai/generateStream")
-	public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-        Prompt prompt = new Prompt(new UserMessage(message));
-        return this.chatModel.stream(prompt);
-    }
-*/
+
 }
 
